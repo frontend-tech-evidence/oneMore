@@ -25,18 +25,23 @@ export function calcularCostoImplementacion(
 export function calcularCostoMembresia(
     costoBaseMensual,
     mesesDeRegalo,
-    isPagoMensual = false
+    isPagoMensual = false,
+    isFirstYear = true
 ) {
     const mesesDelAño = 12
     if (isPagoMensual) {
         return costoBaseMensual
     }
-    return costoBaseMensual * (mesesDelAño - mesesDeRegalo)
-}
 
-export function calcularCostoFacturacionAnual(costoBaseMensual) {
-    const mesesDelAño = 12
-    return costoBaseMensual * mesesDelAño
+    if (isFirstYear === true && isPagoMensual === false) {
+        return costoBaseMensual * (mesesDelAño - mesesDeRegalo)
+    }
+
+    if (isFirstYear === false && isPagoMensual === false) {
+        return costoBaseMensual * mesesDelAño
+    }
+
+    return costoBaseMensual
 }
 
 export function calcularCostoTimbres(
@@ -52,20 +57,25 @@ export function calcularCostoTimbres(
     return costoTotal
 }
 
+export function calcularCostoFacturacionAnual(costoBaseMensual) {
+    const mesesDelAño = 12
+    return costoBaseMensual * mesesDelAño
+}
+
 export function calcularCostoUsuario(
     cantidadUsuariosRequeridos,
     cantidadGratisIncluidos,
     costoUsuarioExtra,
     hasPrecioUsuarioExtraVariable = false,
-    costoUsuarioExtraDespuesDeLimite?,
-    cantidadDeUsuariosSinDescuento?
+    costoUsuarioExtraDespuesDeLimite,
+    cantidadDeUsuariosAntesDelDescuento
 ) {
     if (hasPrecioUsuarioExtraVariable) {
-        if (cantidadUsuariosRequeridos > cantidadDeUsuariosSinDescuento) {
+        if (cantidadUsuariosRequeridos > cantidadDeUsuariosAntesDelDescuento) {
             const cantidadAntesDelRango =
-                cantidadDeUsuariosSinDescuento - cantidadGratisIncluidos
+                cantidadDeUsuariosAntesDelDescuento - cantidadGratisIncluidos
             const cantidadDespuesDelRango =
-                cantidadUsuariosRequeridos - cantidadDeUsuariosSinDescuento
+                cantidadUsuariosRequeridos - cantidadDeUsuariosAntesDelDescuento
             const costoDespuesDelLimite =
                 cantidadDespuesDelRango * costoUsuarioExtraDespuesDeLimite
             const costoAntesDelLimite =
@@ -81,11 +91,11 @@ export function calcularCostoUsuario(
 }
 
 export function calcularCostoPrimerAno(
-    costoImplementacion: number,
-    costoMembresia: number,
-    costoTimbres: number,
-    costoUsuarios: number
-): number {
+    costoImplementacion,
+    costoMembresia,
+    costoTimbres,
+    costoUsuarios
+) {
     return Math.round(
         costoImplementacion + costoMembresia + costoTimbres + costoUsuarios
     )
@@ -97,67 +107,6 @@ export function calcularCostoSegundoAno(
     costoUsuarios
 ) {
     return Math.round(costoMembresia + costoTimbres + costoUsuarios)
-}
-
-export function getAllCostosPaquete(
-    atributosDeCostosDinamicosPaquetes: AtributosDeCostosDinamicosPaquetes,
-    paquete: CostosPaquete
-) {
-    const costoImplementacion = calcularCostoImplementacion(
-        paquete.costoActivacion,
-        paquete.costoMigracion,
-        paquete.costoCapacitacion,
-        paquete.descuentoPorSeleccionUnPagoDeImplementacion,
-        atributosDeCostosDinamicosPaquetes.isPagoImplementacionMensual
-    )
-
-    const costoMembresia = calcularCostoMembresia(
-        paquete.costoBaseMensual,
-        paquete.mesesDeRegaloPorSeleccionUnPagoDeMembresia,
-        atributosDeCostosDinamicosPaquetes.isPagoMensualidadMensual
-    )
-
-    const costoFacturacionAnual = calcularCostoFacturacionAnual(
-        paquete.costoBaseMensual
-    )
-
-    const costoTimbres = calcularCostoTimbres(
-        atributosDeCostosDinamicosPaquetes.timbresRequeridos,
-        paquete.timbresGratisIncluidos,
-        paquete.costoTimbreExtra
-    )
-
-    const costoUsuarios = calcularCostoUsuario(
-        atributosDeCostosDinamicosPaquetes.usuariosRequeridos,
-        paquete.usuariosGratisIncluidos,
-        paquete.costoUsuarioExtra,
-        paquete.hasPrecioUsuarioExtraVariable
-    )
-
-    const costoPrimerAno = calcularCostoPrimerAno(
-        costoImplementacion,
-        costoMembresia,
-        costoTimbres,
-        costoUsuarios
-    )
-
-    const costoSegundoAno = calcularCostoSegundoAno(
-        costoMembresia,
-        costoTimbres,
-        costoUsuarios
-    )
-
-    const costosPaquete = {
-        costoImplementacion,
-        costoMembresia,
-        costoTimbres,
-        costoUsuarios,
-        costoFacturacionAnual,
-        costoPrimerAno,
-        costoSegundoAno,
-    }
-
-    return costosPaquete
 }
 
 export function getAllCostosPaquetes(
@@ -195,7 +144,9 @@ export function getAllCostosPaquetes(
             atributosDeCostosDinamicosPaquetes.usuariosRequeridos,
             paquete.usuariosGratisIncluidos,
             paquete.costoUsuarioExtra,
-            paquete.hasPrecioUsuarioExtraVariable
+            paquete.hasPrecioUsuarioExtraVariable,
+            paquete.costoUsuarioExtraDespuesDeLimite,
+            paquete.cantidadDeUsuariosAntesDelDescuento
         )
 
         const costoPrimerAno = calcularCostoPrimerAno(

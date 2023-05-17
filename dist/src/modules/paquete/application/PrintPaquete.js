@@ -20,3 +20,11 @@ export function printDetallePaquete(DetallesPaquetes, idPaquete) {
         }
     }
 }
+export function printCostosPaquete(CostosPaquetes, idPaquete) {
+    for (const detalle in CostosPaquetes) {
+        const elemento = obtenerElementoDelDomConId(`${detalle}${idPaquete}`);
+        if (elemento) {
+            actualizarTextContent(elemento, CostosPaquetes[detalle]);
+        }
+    }
+}

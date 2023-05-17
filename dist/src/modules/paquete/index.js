@@ -243,13 +243,15 @@ window.document.addEventListener('click', (e) => {
         printMoneda();
     }
 });
+// Reload valores de inputs anteriores.
 reloadValorInputSwitch('ImplementacionMensual');
 reloadValorInputSwitch('MembresiaMensual');
 addInputListeners(inputsEnDOM);
-// Siempre por debajo de todo para que pueda tomar los valores anteriores.
+// Printear valores de etiquetas.
 printCostosPaquetes();
 printMoneda();
 printModalidadPagos();
+// Printear valores de domain
 printDetallePaquete(detallesGrow, 'Grow');
 printDetallePaquete(detallesInstitutional, 'Institutional');
 printDetallePaquete(detallesManufacturing, 'Manufacturing');

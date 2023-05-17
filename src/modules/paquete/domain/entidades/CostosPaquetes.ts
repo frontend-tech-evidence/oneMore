@@ -12,7 +12,7 @@ export const costosGrow: CostosPaquete = {
     costoCapacitacion: 9800,
     costoMigracion: 9800,
     // base
-    costoBaseMensual: 2999,
+    costoBaseMensual: 2990,
     // usuarios
     costoUsuarioExtra: 499,
     hasPrecioUsuarioExtraVariable: false,

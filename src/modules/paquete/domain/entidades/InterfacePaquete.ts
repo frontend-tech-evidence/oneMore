@@ -15,6 +15,7 @@ export interface CostosPaquete {
     costoUsuarioExtra: number | string
     hasPrecioUsuarioExtraVariable: boolean
     costoUsuarioExtraDespuesDeLimite?: number | string
+    cantidadDeUsuariosAntesDelDescuento?: number | string
     // timbres
     costoTimbreExtra: number | string
     // razon social
